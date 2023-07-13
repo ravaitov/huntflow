@@ -93,6 +93,7 @@ class RestWH
 
     public function call(string $method, array $params): array
     {
+        $this->error = [];
         $response = $this->client->post($method, ['query' => $params]);
         $result = json_decode($response->getBody(), true);
         $this->total ??= $result['total'] ?? 0;

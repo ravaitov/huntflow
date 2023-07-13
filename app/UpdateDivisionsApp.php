@@ -32,6 +32,7 @@ class UpdateDivisionsApp extends AbstractApp
             $this->tryCount = 3;
             $this->logger->log("Ожидание статуса задачи task_id=" . $this->taskId);
             sleep(5);
+            $this->status = 400;
         }
     }
 
@@ -45,10 +46,10 @@ class UpdateDivisionsApp extends AbstractApp
 
         $response = $this->httpClient()->post($url, ['body' => $json]);
         $result = json_decode($response->getBody());
-        $status = $response->getStatusCode();
+        $this->status = $response->getStatusCode();
 
-        if ($status !== 200)
-            throw new AppException("Error status=$status\n" . print_r($result, 1));
+        if ($this->status !== 200)
+            throw new AppException("Error status=$this->status\n" . print_r($result, 1));
 
         $this->taskId = $result->payload->task_id ?? '';
         $this->logger->log("Успешно запущен процесс task_id=" . $this->taskId);
@@ -60,9 +61,9 @@ class UpdateDivisionsApp extends AbstractApp
             sprintf('accounts/%s/delayed_tasks/%s', $this->config->conf('account_id'), $this->taskId)
         );
         $result = json_decode($response->getBody());
-        $status = $response->getStatusCode();
-        if ($status !== 200)
-            throw new AppException("Error status=$status\n" . print_r($result, 1));
+        $this->status = $response->getStatusCode();
+        if ($this->status !== 200)
+            throw new AppException("Error status=$this->status\n" . print_r($result, 1));
 
         $state = $result->state;
         if ($state !== 'success')

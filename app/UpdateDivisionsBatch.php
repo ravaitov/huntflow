@@ -2,9 +2,6 @@
 
 namespace App;
 
-use App\GetDivisionsApp;
-use App\UpdateDivisionsApp;
-
 class UpdateDivisionsBatch
 {
     public function run(): void

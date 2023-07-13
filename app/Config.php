@@ -33,7 +33,7 @@ class Config
     ];
 
     private array $conf = [
-        'version' => '0.1.0',
+        'version' => '0.1.1',
         'comment' => '',
         'base_uri' => 'https://api.huntflow.ru/v2/', //api
         'access_token' => '',

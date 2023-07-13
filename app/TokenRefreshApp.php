@@ -17,7 +17,8 @@ class TokenRefreshApp extends AbstractApp
             'token/refresh', ['json' => ['refresh_token' => $this->config->conf('refresh_token')]]
         );
         $result = json_decode($response->getBody());
-        if ($response->getStatusCode() === 200) {
+        $this->status = $response->getStatusCode();
+        if ($this->status === 200) {
             $this->logger->log('Ok 200');
             $this->saveTokens($result);
         } else {

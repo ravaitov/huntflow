@@ -7,6 +7,27 @@ use App\Rest\RestWH;
 
 class GetDivisionsApp extends AbstractApp
 {
+    private array $divisionsRow = [];
+    private RestWH $rest;
+
+    private array $requests = [
+        'lists.element.get' => [
+            'params' => [
+                'IBLOCK_TYPE_ID' => 'lists',
+                'IBLOCK_ID' => '115',
+            ],
+            'result' => null,
+        ],
+        'lists.section.get' => [
+            'params' => [
+                'IBLOCK_TYPE_ID' => 'lists',
+                'IBLOCK_ID' => '115',
+                'SELECT' => ['ID', 'NAME', 'IBLOCK_ID'],
+            ],
+            'result' => null,
+        ],
+    ];
+
     public readonly string $key;
 
     public function __construct()
@@ -14,14 +35,16 @@ class GetDivisionsApp extends AbstractApp
         $this->key = 'GetDivisionsApp';
         $this->appName = 'Получение подразделений';
         parent::__construct(Config::APP_ID);
+        $this->rest = new RestWH();
         $this->timeout = 20;
+        $this->tryCount = 6;
     }
 
     protected function protectRun(): void
     {
         $result = $this->getFromBitrix();
         $result = $this->rangeDivisions($result);
-        $result = $this->recurs($result);
+        $result = $this->recurs($result); //print_r($result);
 
         $this->setResult(['items' => $result]);
         $this->logger->log('Получены Подразделения из B24');
@@ -29,35 +52,25 @@ class GetDivisionsApp extends AbstractApp
 
     private function getFromBitrix(): array
     {
-        $wh = new RestWH();
-        $list = $wh->getBig(
-            'lists.element.get',
-            [
-                'IBLOCK_TYPE_ID' => 'lists',
-                'IBLOCK_ID' => '115',
-            ],
-        );
-        $this->restErrorCheck($wh);
+        foreach ($this->requests as $method => &$item) {
+            if (is_array($item['result']))
+                continue;
 
-        $this->tryCount = 3;
-        $section = $wh->getBig(
-            'lists.section.get',
-            [
-                'IBLOCK_TYPE_ID' => 'lists',
-                'IBLOCK_ID' => '115',
-                'SELECT' => ['ID', 'NAME', 'IBLOCK_ID'],
-            ],
-        );
-        $this->restErrorCheck($wh);
+            $item['result'] = $this->rest->getBig($method, $item['params']);
+            if (!$this->rest->error())
+                continue;
 
-        return array_merge($section, $list);
-    }
-
-    private function restErrorCheck(RestWH $wh): void
-    {
-        if ($wh->error()) {
-            throw new AppException("REST Error\n" . print_r($wh->error(), 1));
+            $item['result'] = null;
+            $this->status = $this->rest->error()['status'];
+            throw new AppException("REST Error: status=$this->status\n" . print_r($this->rest->error(), 1));
         }
+
+        $result = [];
+        foreach ($this->requests as $i) {
+            $result = array_merge($i['result'], $result);
+        }
+
+        return $result;
     }
 
     private function rangeDivisions(array $rowData): array

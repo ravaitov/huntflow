@@ -17,7 +17,7 @@ class AbstractApp
     protected $timeout = 10;
     protected string $appName;
     protected Result $result;
-    protected int $status = 400;
+    protected int $status;
 
     public readonly string $key;
 
@@ -36,7 +36,7 @@ class AbstractApp
     public function __destruct()
     {
 //        $this->sendPendingErrors();
-        $this->logger->log('<<< Завершение: ' . $this->appName . "\r\n", Config::EVENT);
+        $this->logger->log('<<< Завершение: ' . $this->appName . "\n", Config::EVENT);
     }
 
     public function run(): void
@@ -44,7 +44,7 @@ class AbstractApp
         while ($this->tryCount-- > 0) {
             try {
                 $this->protectRun();
-                $this->status = 200;
+                $this->status ??= 200;
                 $this->tryCount = 0;
                 $this->finish();
             } catch (Exceptions\ConfigException|Exceptions\TerminateException $exception) {
@@ -61,6 +61,11 @@ class AbstractApp
                 }
             }
         }
+    }
+
+    public function getStatus(): int
+    {
+        return $this->status;
     }
 
     public function getResult(): ?array
