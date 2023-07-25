@@ -6,6 +6,7 @@ use App\DataBase\DataBase;
 use App\Logger\Logger;
 use App\Result\Result;
 use GuzzleHttp\Client;
+use stdClass;
 
 class AbstractApp
 {
@@ -16,7 +17,7 @@ class AbstractApp
     protected $pause = 3;
     protected $timeout = 10;
     protected string $appName;
-    protected Result $result;
+    protected Result|stdClass $result;
     protected int $status;
 
     public readonly string $key;
@@ -38,6 +39,8 @@ class AbstractApp
 //        $this->sendPendingErrors();
         $this->logger->log('<<< Завершение: ' . $this->appName . "\n", Config::EVENT);
     }
+
+    public function prepare(array $params): void {}
 
     public function run(): void
     {

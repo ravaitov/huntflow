@@ -2,9 +2,9 @@
 
 namespace App;
 
-use App\Exceptions\AppException;
-use App\Traits\SingletonTrait;
 use App\Exceptions\ConfigException;
+use App\Traits\SingletonTrait;
+use App\DataBase\DataBase;
 
 class Config
 {
@@ -32,20 +32,38 @@ class Config
         self::DEBUG => 'Отладка: ',
     ];
 
+    private DataBase $dataBase;
+
     private array $conf = [
-        'version' => '0.1.1',
+        'version' => '0.1.2',
         'comment' => '',
         'base_uri' => 'https://api.huntflow.ru/v2/', //api
         'access_token' => '',
         'refresh_token' => '',
         'tokens' => 'tokens.txt',
+        'x-token' => 'jhk6jkl89',
         'log_file' => '??', // auto init
         'log_limit' => 90, // log files count limit
         'pending_errors' => '??', // auto init
         'app_id' => self::APP_ID, // !!!
         'account_id' => 176006, //"КОНТАБИЛИТА"
+        'database' =>
+            [
+                'comment' => '',
+                'type' => 'mysql',
+                'host' => '192.168.100.170:3306',
+                'name' => 'huntflow',
+                'user' => 'huntflow',
+                'password' => 'hunt45fgtrGH',
+            ],
         'db_log' => [],
     ];
+
+    public function dataBase(): DataBase
+    {
+        $this->dataBase ??= new DataBase('database');
+        return $this->dataBase;
+    }
 
     public function conf(string $key): array|string|int
     {

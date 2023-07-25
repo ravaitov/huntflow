@@ -1,7 +1,8 @@
 {
     "require": {
         "guzzlehttp/guzzle": "^7.7",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+      "ext-curl": "*"
     },
     "autoload": {
         "psr-4": {

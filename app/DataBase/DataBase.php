@@ -17,8 +17,13 @@ class DataBase
             $conf['user'],
             $conf['password']
         );
-//        $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        $this->dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+//        $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+    }
+
+    public function handle(): PDO
+    {
+        return $this->dbh;
     }
 
     public function execute(string $queryString, array $params = []): array
