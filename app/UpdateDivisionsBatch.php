@@ -8,5 +8,7 @@ class UpdateDivisionsBatch
     {
         (new GetDivisionsApp)->run();
         (new UpdateDivisionsApp)->run();
+        sleep(1);
+        (new MappingDivisions())->run();
     }
 }

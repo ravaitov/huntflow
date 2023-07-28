@@ -24,7 +24,7 @@ class ForeignMapper
         );
 
         $this->idToForeignStatement = $this->dataBase->handle()->prepare(
-            "SELECT foreign from $this->table where id = :id"
+            "SELECT `foreign` from $this->table where id = :id"
         );
 
         $this->foreignToIdStatement = $this->dataBase->handle()->prepare(

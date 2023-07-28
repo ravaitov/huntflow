@@ -30,9 +30,8 @@ class Controller
             $this->logAndDie("Класс $method не найден");
         }
 
-        $this->app->prepare(json_decode($json));
+        $this->app->prepare(json_decode($json, true));
 
-//        file_put_contents('post', print_r($_REQUEST, 1));
     }
 
     public function run():void

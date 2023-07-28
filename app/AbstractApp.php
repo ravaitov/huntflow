@@ -17,8 +17,9 @@ class AbstractApp
     protected $pause = 3;
     protected $timeout = 10;
     protected string $appName;
-    protected Result|stdClass $result;
+    protected Result $result;
     protected int $status;
+    protected array|stdClass $apiResult;
 
     public readonly string $key;
 
@@ -59,6 +60,7 @@ class AbstractApp
             } catch (\Throwable $exception) {
                 $this->logger->log($exception->getMessage(), Config::ERROR);
             } finally {
+                $this->checkTokenRefresh();
                 if ($this->tryCount > 0) {
                     sleep($this->pause); // + rand(0, 5));
                 }
@@ -119,6 +121,13 @@ class AbstractApp
         if ($minutes && (time() - $fTime) > 60 * $minutes) {
             $this->logger->log(sprintf('Устаревший файл %s (более %d мин.)', $filePath, $minutes), Config::ERROR);
             exit("!!! Old $filePath\n");
+        }
+    }
+
+    private function checkTokenRefresh():void
+    {
+        if ('token_expired' === ($this->apiResult->errors[0]->detail ?? '')) {
+            (new TokenRefreshApp())->run();
         }
     }
 }

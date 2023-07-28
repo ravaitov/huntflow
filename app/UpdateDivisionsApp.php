@@ -45,13 +45,13 @@ class UpdateDivisionsApp extends AbstractApp
         $url = sprintf('accounts/%s/divisions/batch', $this->config->conf('account_id'));
 
         $response = $this->httpClient()->post($url, ['body' => $json]);
-        $result = json_decode($response->getBody());
+        $this->apiResult = json_decode($response->getBody());
         $this->status = $response->getStatusCode();
 
         if ($this->status !== 200)
-            throw new AppException("Error status=$this->status\n" . print_r($result, 1));
+            throw new AppException("Error status=$this->status\n" . print_r($this->apiResult, 1));
 
-        $this->taskId = $result->payload->task_id ?? '';
+        $this->taskId = $this->apiResult->payload->task_id ?? '';
         $this->logger->log("Успешно запущен процесс task_id=" . $this->taskId);
     }
 
@@ -60,12 +60,12 @@ class UpdateDivisionsApp extends AbstractApp
         $response = $this->httpClient()->get(
             sprintf('accounts/%s/delayed_tasks/%s', $this->config->conf('account_id'), $this->taskId)
         );
-        $result = json_decode($response->getBody());
+        $this->apiResult = json_decode($response->getBody());
         $this->status = $response->getStatusCode();
         if ($this->status !== 200)
-            throw new AppException("Error status=$this->status\n" . print_r($result, 1));
+            throw new AppException("Error status=$this->status\n" . print_r($this->apiResult, 1));
 
-        $state = $result->state;
+        $state = $this->apiResult->state ?? '';
         if ($state !== 'success')
             throw new AppException("Не завершено state=$state");
 
