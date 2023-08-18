@@ -6,7 +6,7 @@ use App\DataBase\DataBase;
 use App\Exceptions\AppException;
 use App\Utils\ForeignMapper;
 
-class TransferVacancyApp extends AbstractApp
+class TestApp extends AbstractApp
 {
     private ForeignMapper $divisionMapper;
     private ForeignMapper $vacancyMapper;
@@ -16,7 +16,7 @@ class TransferVacancyApp extends AbstractApp
 
     public function __construct()
     {
-        $this->appName ??= 'Передача вакансии';
+        $this->appName = 'Передача вакансии Test';
         $dataBase = new DataBase('database');
         $this->divisionMapper = new ForeignMapper($dataBase, 'division_map');
         $this->vacancyMapper = new ForeignMapper($dataBase, 'vacancy_map');
@@ -36,15 +36,20 @@ class TransferVacancyApp extends AbstractApp
             throw new AppException('!!division ID mapper error', true);
 
         $this->first['account_division'] = $mappedDivisionId;
+//        http_response_code(433);
+//        http_response_code(200);
+//        exit(222);
 //        $this->logger->log(print_r($params, 1));
     }
 
     protected function protectRun(): void
     {
         $request = $this->presentRequest();
+        $this->logger->log("------------------------------\n".print_r($request, 1));
         $json = json_encode($request, JSON_UNESCAPED_UNICODE);
-        $response = $this->httpClient()->post($this->url(), ['body' => $json]);
-
+        $url = sprintf('accounts/%s/vacancies', $this->config->conf('account_id'));
+        exit(222);
+        $response = $this->httpClient()->post($url, ['body' => $json]);
         $this->apiResult = json_decode($response->getBody());
         $this->status = $response->getStatusCode();
 
@@ -55,15 +60,10 @@ class TransferVacancyApp extends AbstractApp
             );
     }
 
-    protected function url(): string
-    {
-        return sprintf('accounts/%s/vacancies', $this->config->conf('account_id'));
-    }
-
     protected function finish(): void
     {
         $this->vacancyMapper->createMap($this->apiResult->id, $this->first['id']);
-        $this->logger->log('Успешно. ID(list_112)=' . $this->first['id']);
+        $this->logger->log('Успешно');
     }
 
     private function presentRequest(): array

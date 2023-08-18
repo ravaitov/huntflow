@@ -18,7 +18,7 @@ class AbstractApp
     protected $timeout = 10;
     protected string $appName;
     protected Result $result;
-    protected int $status;
+    protected int $status = 400;
     protected array|stdClass $apiResult;
 
     public readonly string $key;
@@ -48,21 +48,23 @@ class AbstractApp
         while ($this->tryCount-- > 0) {
             try {
                 $this->protectRun();
-                $this->status ??= 200;
+                $this->status = 200;
                 $this->tryCount = 0;
+                http_response_code($this->status);
                 $this->finish();
-            } catch (Exceptions\ConfigException|Exceptions\TerminateException $exception) {
-                $this->logger->log($exception->getMessage(), Config::ERROR);
-                $this->tryCount = 0;
             } catch (Exceptions\AppException $exception) {
                 $this->logger->log($exception->getMessage(), Config::ERROR);
                 $this->tryCount = $exception->terminate ? 0 : $this->tryCount;
+                $this->status = 400;
             } catch (\Throwable $exception) {
                 $this->logger->log($exception->getMessage(), Config::ERROR);
+                $this->status = 400;
             } finally {
                 $this->checkTokenRefresh();
                 if ($this->tryCount > 0) {
                     sleep($this->pause); // + rand(0, 5));
+                } else {
+                    http_response_code($this->status);
                 }
             }
         }
@@ -128,6 +130,7 @@ class AbstractApp
     {
         if ('token_expired' === ($this->apiResult->errors[0]->detail ?? '')) {
             (new TokenRefreshApp())->run();
+            $this->tryCount++;
         }
     }
 }

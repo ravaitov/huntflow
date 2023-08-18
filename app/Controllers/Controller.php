@@ -16,7 +16,7 @@ class Controller
     {
         Logger::instance()->log("Controller error: $mesaage\n", Config::ERROR);
         http_response_code($code);
-        throw new AppException("$mesaage, Status=$code", true);
+        exit();
     }
 
     public function __construct(string $token, string $method, string $json)
@@ -27,11 +27,14 @@ class Controller
         try {
             $this->app = eval("return new App\\$method();");
         } catch (Throwable $t) {
-            $this->logAndDie("Класс $method не найден");
+            $this->logAndDie("Класс $method не найден", 405);
         }
 
-        $this->app->prepare(json_decode($json, true));
-
+        try {
+            $this->app->prepare(json_decode($json, true));
+        } catch (Throwable $t) {
+            $this->logAndDie("$method ->prepare error " . $t->getMessage());
+        }
     }
 
     public function run():void

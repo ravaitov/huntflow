@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Exceptions\ConfigException;
+use App\Exceptions\AppException;
 use App\Traits\SingletonTrait;
 use App\DataBase\DataBase;
 
@@ -35,7 +35,7 @@ class Config
     private DataBase $dataBase;
 
     private array $conf = [
-        'version' => '0.1.2',
+        'version' => '0.3.0',
         'comment' => '',
         'base_uri' => 'https://api.huntflow.ru/v2/', //api
         'access_token' => '',
@@ -68,7 +68,7 @@ class Config
     public function conf(string $key): array|string|int
     {
         if (!isset($this->conf[$key])) {
-            throw new ConfigException("Config error! Unknown key='$key'");
+            throw new AppException("Config error! Unknown key='$key'", true);
         }
 
         return $this->conf[$key];
@@ -96,7 +96,7 @@ class Config
             $this->conf['tokens'] = $this->conf['stor_dir'] . $this->conf['tokens'];
             $this->loadTokens();
         } catch (\Throwable $t) {
-            throw new ConfigException("Config init error! " . $t->getMessage());
+            throw new AppException("Config init error! " . $t->getMessage(), true);
         }
 //        print_r($this->conf);
     }
