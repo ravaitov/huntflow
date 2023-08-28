@@ -8,7 +8,7 @@ class TransferVacancyReqApp extends TransferVacancyApp
 
     public function __construct()
     {
-        $this->appName ??= 'Передача заявки на вакансию';
+        $this->appName = 'Передача заявки на вакансию';
         parent::__construct();
     }
 

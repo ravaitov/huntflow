@@ -15,6 +15,7 @@ class Logger
     private LogDataBase $logDataBase;
     private string $prefix = '';
     private int $appId = 0;
+    public bool $echoLog = true;
 
     protected function init(): void
     {
@@ -27,7 +28,9 @@ class Logger
     public function log(string $log, int $level = 0): void
     {
         $this->prefix = $level ? $this->config->level_names[$level] : '';
-        $this->logConsole($log);
+        if ($this->echoLog) {
+            $this->logConsole($log);
+        }
         $this->logFile($log);
 //        return; // test
         if (isset($this->logDataBase) && in_array($level, Config::LOG_DB)) {

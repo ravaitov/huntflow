@@ -8,11 +8,11 @@ use App\Utils\ForeignMapper;
 
 class TransferVacancyApp extends AbstractApp
 {
-    private ForeignMapper $divisionMapper;
-    private ForeignMapper $vacancyMapper;
+    protected ForeignMapper $divisionMapper;
+    protected ForeignMapper $vacancyMapper;
 
-    private array $first;
-    private array $second;
+    protected array $first;
+    protected array $second;
 
     public function __construct()
     {

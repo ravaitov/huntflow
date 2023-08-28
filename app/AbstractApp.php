@@ -41,7 +41,7 @@ class AbstractApp
         $this->logger->log('<<< Завершение: ' . $this->appName . "\n", Config::EVENT);
     }
 
-    public function prepare(array $params): void {}
+    public function prepare(array $params): void {} //вызов только в контроллере!!!
 
     public function run(): void
     {
