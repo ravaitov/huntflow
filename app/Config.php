@@ -21,7 +21,7 @@ class Config
 
     const LOG_DB = [self::ERROR, self::WARNING, self::IMPORTANT, self::EVENT]; // levels logged into DB
 
-    const APP_ID = -1;
+    const APP_ID = 0;
 
     public array $level_names = [
         0 => '',
@@ -35,18 +35,20 @@ class Config
     private DataBase $dataBase;
 
     private array $conf = [
-        'version' => '0.4.0',
+        'version' => '0.5.0',
         'comment' => '',
         'base_uri' => 'https://api.huntflow.ru/v2/', //api
         'access_token' => '',
         'refresh_token' => '',
-        'tokens' => 'tokens.txt',
-        'x-token' => 'jhk6jkl89',
+        'tokens' => 'tokens.txt', // in ../storage/
+        'x-token' => 'jhk6jkl89', //in HEADERS, защита данного ресурса
         'log_file' => '??', // auto init
         'log_limit' => 90, // log files count limit
         'pending_errors' => '??', // auto init
         'app_id' => self::APP_ID, // !!!
         'account_id' => 176006, //"КОНТАБИЛИТА"
+        'account_vacancy_request' => 15254, // schema id (POST {{url}}/accounts/176006/account_vacancy_requests)
+        'applicant_status_ok' => 151718, // Оформление на работу
         'database' =>
             [
                 'comment' => '',

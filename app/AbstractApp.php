@@ -20,10 +20,11 @@ class AbstractApp
     protected Result $result;
     protected int $status = 400;
     protected array|stdClass $apiResult;
+    protected array $params;
 
     public readonly string $key;
 
-    public function __construct(int $appId = 0)
+    public function __construct(int $appId = Config::APP_ID)
     {
         $this->key ??= 'common';
         $this->config = Config::instance();
@@ -41,10 +42,11 @@ class AbstractApp
         $this->logger->log('<<< Завершение: ' . $this->appName . "\n", Config::EVENT);
     }
 
-    public function prepare(array $params): void {} //вызов только в контроллере!!!
+    public function prepare(array $params = []): void {} //вызов только в контроллере, event!!!
 
-    public function run(): void
+    public function run(array $params = []): void
     {
+        $this->params = $params;
         while ($this->tryCount-- > 0) {
             try {
                 $this->protectRun();

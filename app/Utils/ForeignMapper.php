@@ -11,6 +11,7 @@ class ForeignMapper
     private PDOStatement $createMapStatement;
     private PDOStatement $idToForeignStatement;
     private PDOStatement $foreignToIdStatement;
+    private PDOStatement $foreignDeleteStatement;
 
     public int $count = 0;
 
@@ -30,14 +31,22 @@ class ForeignMapper
         $this->foreignToIdStatement = $this->dataBase->handle()->prepare(
             "SELECT id from $this->table where `foreign` = :foreign"
         );
+
+        $this->foreignDeleteStatement = $this->dataBase->handle()->prepare(
+            "DELETE from $this->table where `foreign` = :foreign"
+        );
     }
 
-    public function createMap(int $id, string $foreign): void
+    public function createMap(int $id, string $foreign, bool $replase = false): bool
     {
-        if ($this->foreignToId($foreign) === false) {
-            $this->createMapStatement->execute(['id' => $id, 'foreign' => $foreign]);
-            $this->count++;
+        if ($this->foreignToId($foreign) !== false) {
+            if (!$replase)
+                return false;
+            $this->foreignDeleteStatement->execute(['foreign' => $foreign]);
         }
+        $this->createMapStatement->execute(['id' => $id, 'foreign' => $foreign]);
+        $this->count++;
+        return true;
     }
 
     public function idToForeign(int $id): string|bool

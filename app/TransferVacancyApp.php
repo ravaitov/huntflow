@@ -62,7 +62,7 @@ class TransferVacancyApp extends AbstractApp
 
     protected function finish(): void
     {
-        $this->vacancyMapper->createMap($this->apiResult->id, $this->first['id']);
+        $this->vacancyMapper->createMap($this->apiResult->id, $this->first['id'], true);
         $this->logger->log('Успешно. ID(list_112)=' . $this->first['id']);
     }
 

@@ -8,15 +8,15 @@ class Result
 {
     use SingletonTrait;
 
-    private array $results;
+    public array $m;
 
     public function getResult(string $key): ?array
     {
-        return $this->results[$key] ?? null;
+        return $this->m[$key] ?? null;
     }
 
     public function setResult(string $key, array $result): void
     {
-        $this->results[$key] = $result;
+        $this->m[$key] = $result;
     }
 }

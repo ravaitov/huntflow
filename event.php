@@ -9,7 +9,7 @@ $headers = array_change_key_case(getallheaders(), CASE_LOWER);
 
 $event = explode('/', $_SERVER['REQUEST_URI'])[2] ?? '';
 $class = [
-        'applicant' => 'TestEventApp',
+        'applicant' => 'ApplicantEmploymentApp',
         'vacancy' => 'TestEventApp',
         'offer' => 'TestEventApp',
         'vacancy_request' => 'TestEventApp',
@@ -26,11 +26,11 @@ try {
 $json = file_get_contents("php://input");
 
 try {
-    $app->prepare(json_decode($json, true) ?? []);
+    $app->prepare(['json' => $json]);
     $app->run();
 } catch (Throwable $t) {
     Logger::instance()->log("!!! Error: " . $t->getMessage() . "\njson=$json\n");
-    http_response_code(200); //!! иначе вебхук удалиться
+    http_response_code(200); //!! иначе вебхук удалится
 }
 
 /*

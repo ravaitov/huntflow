@@ -7,8 +7,6 @@ use App\Exceptions\AppException;
 
 class RestWH
 {
-    private const WH = 'https://bitrix.zemser.ru/rest/1/lb2num4nwmskiklp/';
-
     private int $total;
 
     private Client $client;
@@ -20,7 +18,7 @@ class RestWH
     public function __construct(int $timeOut = 20)
     {
         $this->client = new Client([
-            'base_uri' => self::WH,
+            'base_uri' => require '/home/worker/x_config/wh.php',
             'timeout' => $timeOut,
             'http_errors' => false,
             'verify' => false
@@ -91,8 +89,9 @@ class RestWH
         return $res;
     }
 
-    public function call(string $method, array $params): array
+    public function call(string $method, array $params): mixed
     {
+        $this->info ??= ['method' => $method, 'params' => $params];
         $this->error = [];
         $response = $this->client->post($method, ['query' => $params]);
         $result = json_decode($response->getBody(), true);

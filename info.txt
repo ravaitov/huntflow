@@ -1,0 +1,15 @@
+nginx:
+root /home/worker/https
+server_name app.zemser.ru
+try_files $uri $uri/ /index.php?$query_string;
+
+Если корректно разрешается url на втором уровне (пример - https://app.zemser.ru/frontcalc/) - обрабатывается index.php в подпапке.
+
+Если нет, то обрабатывается в
+/home/worker/https/index.php
+https://app.zemser.ru/huntflow/{applicant|...} мапится на /home/worker/https/huntflow/event.php
+но https://app.zemser.ru/huntflow/ обрабатывается /home/worker/https/huntflow/index.php
+event.php обрабатывает веб-хуки от Хантфлоу
+index.php обрабатывает запросы от B24
+
+Кроме того часть заданий выполняются в CLI. Входом является run.php + имя класса

@@ -4,8 +4,6 @@ namespace App;
 
 class TransferVacancyReqApp extends TransferVacancyApp
 {
-    const account_vacancy_request = 15254;
-
     public function __construct()
     {
         $this->appName = 'Передача заявки на вакансию';
@@ -15,7 +13,7 @@ class TransferVacancyReqApp extends TransferVacancyApp
     public function prepare(array $params = []): void
     {
         parent::prepare($params);
-        $this->first['account_vacancy_request'] = self::account_vacancy_request;
+        $this->first['account_vacancy_request'] = $this->config->conf('account_vacancy_request');
     }
 
     protected function url(): string
