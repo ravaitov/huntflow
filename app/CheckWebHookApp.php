@@ -34,7 +34,7 @@ class CheckWebHookApp extends AbstractApp
             if ($item->url === $this->webHookUrl && in_array($this->webHookEvent, $item->webhook_events)) {
                 if ($item->active)
                     return;
-                (new DeleteWebHookApp())->run(['id' => $item['id']]);
+                (new DeleteWebHookApp())->run(['id' => $item->id]);
             }
         }
         (new CreateWebHookApp())->run();
