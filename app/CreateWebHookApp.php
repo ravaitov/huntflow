@@ -22,7 +22,7 @@ class CreateWebHookApp extends CheckWebHookApp
             $this->webHookEvent
         );
         $response = $this->httpClient()->post($this->endPoint, ['body' => $json]);
-        $this->apiResult = json_decode($response->getBody(), true);
+        $this->apiResult = json_decode($response->getBody());
         $this->status = $response->getStatusCode();
 
         if ($this->status !== 200)

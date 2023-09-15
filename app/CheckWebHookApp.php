@@ -21,7 +21,7 @@ class CheckWebHookApp extends AbstractApp
     protected function protectRun(): void
     {
         $response = $this->httpClient()->get($this->endPoint);
-        $this->apiResult = json_decode($response->getBody(), true);
+        $this->apiResult = json_decode($response->getBody());
         $this->status = $response->getStatusCode();
 
         if ($this->status !== 200)
@@ -30,9 +30,9 @@ class CheckWebHookApp extends AbstractApp
 
     protected function finish(): void
     {
-        foreach ($this->apiResult['items'] as $item) {
-            if ($item['url'] === $this->webHookUrl && in_array($this->webHookEvent, $item['webhook_events'])) {
-                if ($item['active'])
+        foreach ($this->apiResult->items as $item) {
+            if ($item->url === $this->webHookUrl && in_array($this->webHookEvent, $item->webhook_events)) {
+                if ($item->active)
                     return;
                 (new DeleteWebHookApp())->run(['id' => $item['id']]);
             }
