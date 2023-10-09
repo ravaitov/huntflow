@@ -35,7 +35,7 @@ class Config
     private DataBase $dataBase;
 
     private array $conf = [
-        'version' => '0.5.1',
+        'version' => '0.5.2',
         'comment' => '',
         'base_uri' => 'https://api.huntflow.ru/v2/', //api
         'access_token' => '',

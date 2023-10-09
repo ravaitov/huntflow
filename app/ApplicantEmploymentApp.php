@@ -28,11 +28,11 @@ class ApplicantEmploymentApp extends AbstractApp
         $params = json_decode($json, true);
         $type = $params['event']['applicant_log']['type'];
         if ($type !== 'STATUS') {
-            $this->logger->log("type = $type != STATUS");
+            $this->logger->log("type = $type != STATUS. Нет переноса.");
             exit();
         }
         if ($this->config->conf('applicant_status_ok') !== ($params['event']['applicant_log']['status']['id'] ?? 0)) {
-            $this->logger->log($params['event']['applicant_log']['status']['name'] ?? 'status name ??');
+            $this->logger->log(($params['event']['applicant_log']['status']['name'] ?? 'status name ??') . '. Нет переноса');
             exit();
         }
         $this->docId = $this->vacancyMapper->idToForeign($params['event']['applicant_log']['hired_in_fill_quota']['vacancy_request'] ?? 0);

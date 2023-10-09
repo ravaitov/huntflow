@@ -119,7 +119,7 @@ class AbstractApp
 
         $fTime = filemtime($filePath);
         if ($fTime === false) {
-            $this->logger->log(sprintf('Ошибка доступа к файду %s', $filePath), Config::ERROR);
+            $this->logger->log(sprintf('Ошибка доступа к файлу %s', $filePath), Config::ERROR);
             exit("!!! NO access $filePath\n");
         }
         if ($minutes && (time() - $fTime) > 60 * $minutes) {
