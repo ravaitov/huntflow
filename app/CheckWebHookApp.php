@@ -6,7 +6,6 @@ use App\Exceptions\AppException;
 
 class CheckWebHookApp extends AbstractApp
 {
-    protected string $endPoint;
     protected string $webHookUrl = 'https://app.zemser.ru/huntflow/applicant';
     protected string $webHookEvent = 'APPLICANT';
 

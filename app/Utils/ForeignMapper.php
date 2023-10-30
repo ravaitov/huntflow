@@ -8,18 +8,20 @@ use PDO;
 
 class ForeignMapper
 {
-    private PDOStatement $createMapStatement;
-    private PDOStatement $idToForeignStatement;
-    private PDOStatement $foreignToIdStatement;
-    private PDOStatement $foreignDeleteStatement;
+    protected PDOStatement $createMapStatement;
+    protected PDOStatement $idToForeignStatement;
+    protected PDOStatement $foreignToIdStatement;
+    protected PDOStatement $foreignDeleteStatement;
+    protected DataBase $dataBase;
+    protected string $table;
 
     public int $count = 0;
 
-    public function __construct(
-        private DataBase $dataBase,
-        private string   $table,
-    )
+    public function __construct(DataBase $dataBase, string $table,)
     {
+        $this->dataBase = $dataBase;
+        $this->table = $table;
+
         $this->createMapStatement = $this->dataBase->handle()->prepare(
             "INSERT INTO $this->table (id, `foreign`) values (:id, :foreign)"
         );

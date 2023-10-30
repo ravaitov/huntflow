@@ -32,8 +32,9 @@ class TransferVacancyApp extends AbstractApp
         if (empty($params['first']['division_id']))
             throw new AppException('!!division_id required', true);
 
-        if (empty($mappedDivisionId = $this->divisionMapper->foreignToId($params['first']['division_id'])))
-            throw new AppException('!!division ID mapper error', true);
+        $foreign = $params['first']['division_id'];
+        if (empty($mappedDivisionId = $this->divisionMapper->foreignToId($foreign)))
+            throw new AppException("!!division ID mapper error (ID=$foreign)", true);
 
         $this->first['account_division'] = $mappedDivisionId;
 //        $this->logger->log(print_r($params, 1));
@@ -43,6 +44,8 @@ class TransferVacancyApp extends AbstractApp
     {
         $request = $this->presentRequest();
         $json = json_encode($request, JSON_UNESCAPED_UNICODE);
+        $this->logger->log('json=' . $json);
+
         $response = $this->httpClient()->post($this->url(), ['body' => $json]);
 
         $this->apiResult = json_decode($response->getBody());

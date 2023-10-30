@@ -21,6 +21,7 @@ class AbstractApp
     protected int $status = 400;
     protected array|stdClass $apiResult;
     protected array $params;
+    protected string $endPoint;
 
     public readonly string $key;
 
@@ -34,6 +35,7 @@ class AbstractApp
         $this->config->setParam('app_name', $this->appName);
         $this->logger = Logger::instance();
         $this->logger->log(">>> Старт: " . $this->appName . '. V=' . $this->config->conf('version'), Config::EVENT);
+        $this->endPoint ??= sprintf('accounts/%s/', $this->config->conf('account_id'));
     }
 
     public function __destruct()

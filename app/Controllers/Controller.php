@@ -21,6 +21,7 @@ class Controller
 
     public function __construct(string $token, string $method, string $json)
     {
+        Logger::instance()->echoLog = false;
         if (Config::instance()->conf('x-token') !== $token)
             $this->logAndDie('x-token', 401);
 
